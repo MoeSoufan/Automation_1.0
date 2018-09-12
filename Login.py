@@ -1,6 +1,6 @@
 
         ### Created By Moe Soufan
-        ### Last Edit: September 7
+        ### Creation Date: September 7, 2018
 
         # Main? function for automation efforts
         # Using pywinauto to detect UI elements on cvi42.exe
@@ -9,7 +9,7 @@
 import time
 
 
-def login_to_cvi42(app, dialog):
+def login_to_cvi42(app, dialog,status):
 
     while True:
         if app.LoginFailure.exists(timeout=1.5) is True:
@@ -33,9 +33,10 @@ def login_to_cvi42(app, dialog):
         else:
             break
 
-    dialog.LoadImagePreviewsDone.wait('visible', 1000)
-    end = time.time()
-    print "Login Time: %.2f" % (end - start)
+    if status == 1:
+        dialog.LoadImagePreviewsDone.wait('visible', 1000) or dialog.SaveWorkspaceDone.wait('visible', 1000)
+        end = time.time()
+        print "Login Time: %.2f" % (end - start)
 
     return
 

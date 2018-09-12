@@ -1,62 +1,55 @@
 
         ### Created By Moe Soufan
-        ### Last Edit: September 7
+        ### Creation Date: September 12, 2018
 
         # Initializes the program, login or connect to existing process
 
 
-import subprocess
+import os
 from pywinauto import application, findbestmatch
 
-import Login
+import login
 
 
 def initialize_session():
 
-    a = subprocess.check_output('tasklist')
-    instances = 0
-    flag = False
+    process_id = [item.split()[1] for item in os.popen('tasklist').read().splitlines()[4:] if "cvi42.exe" in item.split()]
+    # print process_id
 
-    for string in a.split():
-        if flag is True:
-            process_id = string
-            # print "PID of cvi42.exe:", process_id
-            app = application.Application(backend="uia").connect(process=int(process_id))
-            dialog = app.CircleCardiovascularImaging
-            # dialog.print_control_identifiers()
+    if len(process_id) >= 1:
+        app = application.Application(backend="uia").connect(process=int(process_id[0]))
+        dialog = app.CircleCardiovascularImaging
 
-            # If cvi42 window is minimized
-            try:
-                dialog.set_focus()
-            except findbestmatch.MatchError:
-                icon_app = application.Application(backend="uia").connect(path="explorer")
-                tray_dialog = icon_app.window(class_name="Shell_TrayWnd")
-                tray_dialog.child_window(title="cvi42 - Shortcut - 1 running window").click()
+        # If cvi42 window is minimized
+        try:
+            # pass
+            dialog.set_focus()
+        except findbestmatch.MatchError:
+            icon_app = application.Application(backend="uia").connect(path="explorer")
+            tray_dialog = icon_app.window(class_name="Shell_TrayWnd")
+            tray_dialog.child_window(title="cvi42 - Shortcut - 1 running window").click()
 
-            if "Client Login" in str(dialog.texts()) or dialog.window(
-                    title="Circle Cardiovascular Imaging - Client Login").exists() is True:
-                # print dialog.window(title="Circle Cardiovascular Imaging - Client Login").exists()
-                print "Login Required"
-                # dialog.print_control_identifiers
-                Login.login_to_cvi42(app, dialog)
+        if "Client Login" in str(dialog.texts()) or dialog.window(
+                title="Circle Cardiovascular Imaging - Client Login").exists() is True:
+            # print dialog.print_control_identifiers()
+            # print dialog.window(title="Circle Cardiovascular Imaging - Client Login").exists()
+            print "Login Required"
+            if dialog.child_window(title="Circle Cardiovascular Imaging - Client Login").exists() is True:
+                login.login_to_cvi42(app, dialog, 2)
             else:
-                # dialog.print_control_identifiers()
-                print "This is the main window, user: %s" % str(dialog.texts()[0]).split('-')[1]
-                # dialog.maximize()
-            break
+                login.login_to_cvi42(app, dialog, 1)
+        else:
+            # dialog.print_control_identifiers()
+            print "This is the main window, user: %s" % str(dialog.texts()[0]).split('-')[1]
+            # dialog.maximize()
 
-        # If string = 'cvi42.exe', then the next string read from TASKLIST is the process id.
-        if string == "cvi42.exe":
-            flag = True
-            instances += 1
-
-    if instances == 0:
+    elif len(process_id) == 0:
         # Streamline this call to support different machines
         app = application.Application(backend="uia").start(
             r"D:\Moe-Testing\2018-08-15_MontrealReleaseCandidate2\cvi42_5.9.2_(1111)_win_x64\cvi42.exe")
         dialog = app.CirclecardiovascularImaging
         process_id = app.dialog.process_id()
-        Login.login_to_cvi42(app, dialog)
+        login.login_to_cvi42(app, dialog)
 
-    return process_id, dialog
+    return process_id[0], dialog
 
