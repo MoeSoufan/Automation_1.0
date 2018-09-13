@@ -15,36 +15,25 @@
 
 import loadTest
 import initialization
+import supportingFunctions
 
 # print pywinauto.__version__
 
 # Launch cvi42 if not already running, grab process id. Login method called from within.
-pid, mainDialog = initialization.initialize_session()
+pid, dialog = initialization.initialize_session()
 print "Connected to cvi42.exe ProcessID #%s" % pid
+# mainDialog.print_control_identifiers()
 
 # Load test trial
-loadTest.load(mainDialog)
+loadTest.load(dialog)
+
+# Check Toolbar Status
+# supportingFunctions.check_toolbar_visible(dialog)
+# supportingFunctions.check_toolbar_hidden(dialog)
+# supportingFunctions.if_modules_hidden(dialog)
+# supportingFunctions.click_module(dialog, "Short\n 3D", pid)
 
 exit()
-
-#
-# LoadTest.load(mainDialog)
-
-# print loginDialog.print_control_identifiers()
-
-# loginDialog.Edit.click_input()
-# loginDialog.Edit.double_click_input()
-# loginDialog.Edit.set_text('Function-Flow-Perf')
-#
-# loginDialog.FunctionFlowPerf.double_click_input()
-#
-# start = time.time()
-# loginDialog.LoadingStudyDone.wait('visible',1000)
-# end = time.time()
-#
-# print "Loading Study Time: %.2f" % (end - start)
-#
-
 
 # app = application.Application(backend="uia").connect(path=r"D:\Moe-Testing\2018-08-15_MontrealReleaseCandidate2\cvi42_5.9.2_(1111)_win_x64\cvi42.exe")
 #
@@ -80,7 +69,7 @@ exit()
 #
 #     except findbestmatch.MatchError as ME:
 #         mainDialog.List.wheel_mouse_input(wheel_dist=20)
-#         mainDialog.List.wheel_mouse_input(wheel_dist=-25)
+#         mainDialog.List.wheel_mouse_input(wheel_dist=-40)
 #
 #         if counter <= 2:
 #             mainDialog.AddProtocolStep.click_input()

@@ -9,7 +9,7 @@
 import time
 
 
-def login_to_cvi42(app, dialog,status):
+def login_to_cvi42(app, dialog, status):
 
     while True:
         if app.LoginFailure.exists(timeout=1.5) is True:

@@ -9,6 +9,7 @@ import os
 from pywinauto import application, findbestmatch
 
 import login
+import supportingFunctions
 
 
 def initialize_session():
@@ -22,18 +23,17 @@ def initialize_session():
 
         # If cvi42 window is minimized
         try:
-            # pass
-            dialog.set_focus()
+            pass
+            # dialog.set_focus()
         except findbestmatch.MatchError:
-            icon_app = application.Application(backend="uia").connect(path="explorer")
-            tray_dialog = icon_app.window(class_name="Shell_TrayWnd")
-            tray_dialog.child_window(title="cvi42 - Shortcut - 1 running window").click()
+            supportingFunctions.if_cvi42_minimized()
 
         if "Client Login" in str(dialog.texts()) or dialog.window(
                 title="Circle Cardiovascular Imaging - Client Login").exists() is True:
             # print dialog.print_control_identifiers()
             # print dialog.window(title="Circle Cardiovascular Imaging - Client Login").exists()
             print "Login Required"
+
             if dialog.child_window(title="Circle Cardiovascular Imaging - Client Login").exists() is True:
                 login.login_to_cvi42(app, dialog, 2)
             else:
@@ -48,8 +48,8 @@ def initialize_session():
         app = application.Application(backend="uia").start(
             r"D:\Moe-Testing\2018-08-15_MontrealReleaseCandidate2\cvi42_5.9.2_(1111)_win_x64\cvi42.exe")
         dialog = app.CirclecardiovascularImaging
-        process_id = app.dialog.process_id()
-        login.login_to_cvi42(app, dialog)
+        process_id = [app.dialog.process_id()]
+        login.login_to_cvi42(app, dialog, 1)
 
-    return process_id[0], dialog
+    return int(process_id[0]), dialog
 
