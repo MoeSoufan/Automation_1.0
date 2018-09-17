@@ -61,9 +61,6 @@ def if_modules_hidden(dialog):
 #           4) If still not visible, click on the Add protocol menu item, and try to add the module to the list
 #           5) If still not available, then exit the program
 def click_module(dialog, module, pid):
-    # connect_to_popup = application.Application(backend="uia").connect(process=pid)
-    # popup_dialog = connect_to_popup.MenuItem9
-    # popup_dialog.print_control_identifiers()
 
     counter = 0
     while True:
