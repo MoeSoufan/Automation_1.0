@@ -87,3 +87,13 @@ def click_module(dialog, module, pid):
             # if_modules_hidden(dialog)
 
     return
+
+
+# Return all children windows and visible objects
+def find_visible_buttons(dialog, window_name):
+    button_list = filter(None, re.findall(r"'(.*?)'", str(dialog.window(title=window_name).descendants()), re.DOTALL))
+    print button_list
+    #
+    # for button in button_list:
+    #     dialog.child_window(title=button, found_index=0).click_input()
+    return

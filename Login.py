@@ -12,7 +12,7 @@ import time
 def login_to_cvi42(app, dialog, status):
 
     while True:
-        if app.LoginFailure.exists(timeout=1.5) is True:
+        if app.LoginFailure.exists(timeout=2) is True:
             # print app.LoginFailure.exists()
             # dialog.print_control_identifiers()
             app.LoginFailure.OKEnterButton.click_input()
@@ -26,6 +26,7 @@ def login_to_cvi42(app, dialog, status):
         dialog.LoginEnterButton.click_input()
         start = time.time()
 
+        # print app.LoginFailure.exists()
         if app.LoginFailure.exists(timeout=1.5) is True:
             # print app.LoginFailure.exists()
             # dialog.print_control_identifiers()

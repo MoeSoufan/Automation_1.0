@@ -6,10 +6,11 @@
 
 from pywinauto import application, findbestmatch, findwindows, Desktop
 from collections import OrderedDict
-import time
+import time, re
+
 
 # Click on Short 3D toolbar buttons
-def checkall_toolbar_buttons(dialog):
+def clickall_toolbar_buttons(dialog):
 
     button_dict = OrderedDict([("SAX LV Endocardial Contour", "SplitButton"),
                                ("SAX LV Epicardial Contour", "SplitButton"),
@@ -43,59 +44,85 @@ def checkall_toolbar_buttons(dialog):
                                ("Mitral/Tricuspid Valve Plane Correction on/off", "CheckBox")])
 
     for button_title, control_type in button_dict.items():
-        try:
-            # dialog.child_window(
-            #     title=button_title, control_type=control_type).press_mouse_input(absolute=False)
-            dialog.child_window(title=button_title, control_type=control_type).click_input()
+        if dialog.child_window(title=button_title, control_type=control_type).exists() is True:
+            try:
+                # print button_title, control_type
+                # dialog.child_window(
+                #     title=button_title, control_type=control_type).press_mouse_input(absolute=False)
+                dialog.child_window(title=button_title, control_type=control_type).click_input()
 
-        except findbestmatch.MatchError:
-            pass #for now
+            except findbestmatch.MatchError:
+                pass #for now
 
-        except findwindows.ElementNotFoundError:
-            pass #for now
+            except findwindows.ElementNotFoundError:
+                pass #for now
 
-        except findwindows.ElementAmbiguousError:
-            # dialog.child_window(
-            #     title=button_title, control_type=control_type, found_index=0).press_mouse_input(absolute=False)
-            dialog.child_window(title=button_title, control_type=control_type, found_index=0).click_input()
+            except findwindows.ElementAmbiguousError:
+                # dialog.child_window(
+                #     title=button_title, control_type=control_type, found_index=0).press_mouse_input(absolute=False)
+                dialog.child_window(title=button_title, control_type=control_type, found_index=0).click_input()
 
-
-def machine_learning_items(dialog):
-
-    endo_epi_contours = {   "Detect Endo/Epi Contours Current Phase": 1,
-                            "Detect Endo/Epi Contours Current Slice": 1,
-                            "Detect Endo/Epi Contours Entire Stack": 1,
-                            "Detect Endo/Epi Contours Current Image": 1,
-                            "Detect Endo Contours Current Phase": 1,
-                            "Detect Endo Contours Current Slice": 1,
-                            "Detect Endo Contours Entire Stack": 1,
-                            "Detect Epi Contours Current Phase": 1,
-                            "Detect Epi Contours Current Slice": 1,
-                            "Detect Epi Contours Entire Stack": 1,
-                            "Detect RV Contours Current Phase": 2 ,
-                            "Detect RV Contours Current Slice": 2,
-                            "Detect RV Contours Entire Stack": 2,
-                            "Detect LV/RV Contours at ED/ES Phases": 3,
-                            "Detect LV/RV Contours Current Phase": 3,
-                            "Detect LV/RV Contours Entire Stack": 3,
-                            "Detect LV/RV Contours Current Slice": 3,
-                            "Detect LV/RV Contours Current Image": 3,
-                            "Detect LV Endo/Epi Contours Current Phase": 4,
-                            "Detect LV Endo Contours Current Phase": 4,
-                            "Detect LV Endo/Epi Contours Entire Stack": 4,
-                            "Detect LV Endo Contours Entire Stack": 4,
-                            "Detect RV Contours Current Phase": 5,
-                            "Detect RV Contours Entire Stack": 5}
+        else:
+            print "'%s' Button is not turned on" % button_title
 
 
-    trial_button = "Detect LV Endo/Epi Contours Entire Stack"
+def click_ml_button(dialog, ml_button):
 
-    if dialog.child_window(title=trial_button, control_type="SplitButton").exists() is False:
-        pass
+    machine_learning_buttons = {"Detect Endo/Epi Contours Current Phase": 1,
+                                "Detect Endo/Epi Contours Current Slice": 1,
+                                "Detect Endo/Epi Contours Entire Stack": 1,
+                                "Detect Endo/Epi Contours Current Image": 1,
+                                "Detect Endo Contours Current Phase": 1,
+                                "Detect Endo Contours Current Slice": 1,
+                                "Detect Endo Contours Entire Stack": 1,
+                                "Detect Epi Contours Current Phase": 1,
+                                "Detect Epi Contours Current Slice": 1,
+                                "Detect Epi Contours Entire Stack": 1,
+                                "Detect RV Contours Current Phase": 2,
+                                "Detect RV Contours Current Slice": 2,
+                                "Detect RV Contours Entire Stack": 2,
+                                "Detect LV/RV Contours at ED/ES Phases": 3,
+                                "Detect LV/RV Contours Current Phase": 3,
+                                "Detect LV/RV Contours Entire Stack": 3,
+                                "Detect LV/RV Contours Current Slice": 3,
+                                "Detect LV/RV Contours Current Image": 3,
+                                "Detect LV Endo/Epi Contours Current Phase": 4,
+                                "Detect LV Endo Contours Current Phase": 4,
+                                "Detect LV Endo/Epi Contours Entire Stack": 4,
+                                "Detect LV Endo Contours Entire Stack": 4,
+                                "Detect RV Contours Current Phase": 5,
+                                "Detect RV Contours Entire Stack": 5}
 
+    while True:
+        if dialog.child_window(title=ml_button).exists() is True:
+            dialog.child_window(title=ml_button).click_input()
+        else:
+            for filtered_button in [k for k, v in machine_learning_buttons.items()
+                                    if v == machine_learning_buttons[ml_button]]:
+                if dialog.child_window(title=filtered_button).exists() is True:
+                    dialog.child_window(title=filtered_button).right_click_input()
+                    Desktop(backend="uia").Menu.child_window(title=ml_button, control_type="MenuItem").click_input()
+                    dialog.child_window(title=ml_button).click_input()
 
-    dialog.child_window(title="Detect Endo/Epi Contours Current Phase", control_type="SplitButton").right_click_input()
-    Desktop(backend="uia").Menu.print_control_identifiers()
+                    start = time.time()
+                    dialog.window(title="cvi42").wait_not('visible', 1000)
+                    end = time.time()
+
+                    print "Time to complete ML action: ", end-start
+                    break
+
+    #     for item in machine_learning_buttons[ml_button]:
+    #
+
+    # if trial_button in machine_learning_buttons.keys():
+    #     print "yes: ", machine_learning_buttons.get(trial_button)
+
+    # if dialog.child_window(title=trial_button, control_type="SplitButton").exists() is False:
+    #     pass
+    #
+    #
+    # dialog.child_window(title="Detect Endo/Epi Contours Current Phase", control_type="SplitButton").right_click_input()
+    # Desktop(backend="uia").Menu.print_control_identifiers()
 
 
 
