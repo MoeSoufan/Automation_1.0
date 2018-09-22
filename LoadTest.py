@@ -13,6 +13,9 @@ def load(dialog):
 
     while True:
         if dialog.Edit.exists() is True and dialog.Toolbar.child_window(title="Patient List").exists() is False:
+            if dialog.child_window(title=study_name, control_type="Window").exists() is True:
+                break
+
             try:
                 # print dialog.Edit.print_identifiers()
                 dialog.Edit.click_input()

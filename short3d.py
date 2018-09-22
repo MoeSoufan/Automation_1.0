@@ -93,59 +93,55 @@ def click_ml_button(dialog, ml_button):
                                 "Detect RV Contours Current Phase": 5,
                                 "Detect RV Contours Entire Stack": 5}
 
-    while True:
-        if dialog.child_window(title=ml_button).exists() is True:
-            dialog.child_window(title=ml_button).click_input()
-        else:
-            for filtered_button in [k for k, v in machine_learning_buttons.items()
-                                    if v == machine_learning_buttons[ml_button]]:
-                if dialog.child_window(title=filtered_button).exists() is True:
-                    dialog.child_window(title=filtered_button).right_click_input()
-                    Desktop(backend="uia").Menu.child_window(title=ml_button, control_type="MenuItem").click_input()
-                    dialog.child_window(title=ml_button).click_input()
+    if dialog.child_window(title=ml_button).exists() is False:
+        for filtered_button in [k for k, v in machine_learning_buttons.items()
+                                if v == machine_learning_buttons[ml_button]]:
+            if dialog.child_window(title=filtered_button).exists() is True:
+                dialog.child_window(title=filtered_button).right_click_input()
+                Desktop(backend="uia").Menu.child_window(title=ml_button, control_type="MenuItem").click_input()
 
-                    start = time.time()
-                    dialog.window(title="cvi42").wait_not('visible', 1000)
-                    end = time.time()
+                start = time.time()
+                dialog.child_window(title=ml_button).click_input()
+                dialog.progressbar.exists()
+                end = time.time()
 
-                    print "Time to complete ML action: ", end-start
-                    break
+                print "Time to complete ML action: ", end - start
 
-    #     for item in machine_learning_buttons[ml_button]:
-    #
+    else:
+        start = time.time()
+        dialog.child_window(title=ml_button).click_input()
+        dialog.progressbar.exists()
+        end = time.time()
 
-    # if trial_button in machine_learning_buttons.keys():
-    #     print "yes: ", machine_learning_buttons.get(trial_button)
+        print "Time to complete ML action: ", end - start
 
-    # if dialog.child_window(title=trial_button, control_type="SplitButton").exists() is False:
-    #     pass
-    #
-    #
-    # dialog.child_window(title="Detect Endo/Epi Contours Current Phase", control_type="SplitButton").right_click_input()
-    # Desktop(backend="uia").Menu.print_control_identifiers()
+    return
 
 
+def sax_main_viewer(dialog, study, series):
 
-    # dialog.child_window(title="Detect LV/RV Contours at ED/ES Phases", control_type="SplitButton").right_click_input()
-    # Desktop(backend="uia").Menu.child_window(title="Detect LV/RV Contours Entire Stack",
-    #                                                control_type="MenuItem").click_input()
-    # dialog.child_window(title="Detect LV/RV Contours Entire Stack", control_type="SplitButton").click_input()
-    # start = time.time()
-    # dialog.child_window(title="cvi42").wait_not("visible", 1000)
-    # end = time.time()
-    #
-    # print "Endo/Epi Stack completion time: %s" % (end-start)
+    command = "dialog.child_window(title=study, control_type='Window', found_index=0)" \
+              ".SplitButton.Custom%s.double_click_input()" % (series+4)
 
+    ###### CONSIDER WRITING METHOD
+    if dialog.child_window(control_type="Window", found_index=0).exists() is True and \
+            dialog.child_window(title="OK Enter", control_type="Button").exists() is True:
+        dialog.child_window(title="OK Enter", control_type="Button").click_input()
 
-# def sax_main_viewer(dialog):
-#     print dialog.print_control_identifiers()
-#     # print dialog.child_window(title="SA-3D Demo", control_type="Window").print_control_identifiers()
-#     # print dialog.child_window(title="SAX3D Stack", control_type="Text").print_control_identifiers()
-#     dialog.SAX3DStackCustom.click_input()
-#     dialog.Custom29.click_input()
-#     dialog.Custom30.click_input()
-#     dialog.Slider.click_input()
-#     dialog.Thumb.click_input()
-#     dialog.Thumb2.click_input()
-#     dialog.Thumb3.click_input()
-#     return
+    # print dialog.print_control_identifiers()
+    # eval(command)
+
+    # print dialog.child_window(title=study, found_index=0).print_control_identifiers()
+    # while False:
+    #     if dialog.child_window(title=series, control_type="Text").exists() is False:
+    #         dialog.child_window(title=study).SplitButton.child_window(title="Custom5").click_input()
+    # dialog.child_window(title=study).SplitButton.Custom5.click_input()
+    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom5.click_input()
+
+    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom6.click_input()
+    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom7.click_input()
+    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom8.click_input()
+    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom9.click_input()
+    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom10.click_input()
+    # child_window(title="6.  TRUFI 4 CHAMBER s3p1", control_type="Text")
+    return
