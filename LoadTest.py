@@ -2,13 +2,12 @@
         ### Created by: Moatassem Soufan
         ### Creation Date: September 7, 2018
 
-from pywinauto import application, findbestmatch, findwindows
+from pywinauto import application, findbestmatch, findwindows, controls
 import time
 
 
-def load(dialog):
+def load(dialog, study_name):
 
-    study_name = 'SA-3D Demo'
     is_any_tag = False
 
     while True:
@@ -18,12 +17,12 @@ def load(dialog):
 
             try:
                 # print dialog.Edit.print_identifiers()
-                dialog.Edit.click_input()
+                # dialog.Edit.click_input()
                 dialog.Edit.set_text(study_name)
                 start = time.time()
                 dialog.window(title=study_name).double_click_input()
 
-                dialog.LoadingStudyDone.wait('visible', 1000)
+                dialog.LoadingStudyDone.wait('visible', 10000)
                 end = time.time()
                 print "Loading Study Time: %.2f" % (end - start)
                 break

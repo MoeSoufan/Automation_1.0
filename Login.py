@@ -7,6 +7,7 @@
         # Inspect.exe used to identify elements
 
 import time
+from pywinauto import controls
 
 
 def login_to_cvi42(app, dialog, status):
@@ -15,22 +16,23 @@ def login_to_cvi42(app, dialog, status):
         if app.LoginFailure.exists(timeout=2) is True:
             # print app.LoginFailure.exists()
             # dialog.print_control_identifiers()
-            app.LoginFailure.OKEnterButton.click_input()
+            print app.LoginFailure.OKEnterButton
+            app.LoginFailure.OKEnterButton.click()
             exit()
-
-        # dialog.set_focus()
+        # dialog.print_control_identifiers()
         dialog.ServerDown.click_input()
-        dialog.Zombie.click_input()
-        dialog.Edit1.set_text('moe')
-        dialog.Edit2.set_text('moe')
-        dialog.LoginEnterButton.click_input()
+        dialog.child_window(title="zombie").click_input()
+        dialog.child_window(title="User ID Alt+I", control_type="Edit").set_text('moe')
+        dialog.child_window(title="Password Alt+P", control_type="Edit").set_text('moe')
+        dialog.child_window(title="Login Enter").invoke()
         start = time.time()
 
         # print app.LoginFailure.exists()
         if app.LoginFailure.exists(timeout=1.5) is True:
             # print app.LoginFailure.exists()
             # dialog.print_control_identifiers()
-            app.LoginFailure.OKEnterButton.click_input()
+            print app.LoginFailure.OKEnterButton
+            app.LoginFailure.OKEnterButton.click()
         else:
             break
 

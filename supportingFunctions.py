@@ -3,8 +3,8 @@
         ###   Created by: Moe Soufan
         ###   Creation Date: September 12, 2018
 
-from pywinauto import application, findbestmatch, findwindows
-import re
+from pywinauto import application, findbestmatch, findwindows, Desktop
+import re, time
 
 
 # If the toolbar is hidden and un-docked, Auto hide button is clicked and toolbar is re-docked
@@ -97,3 +97,51 @@ def find_visible_buttons(dialog, window_name):
     # for button in button_list:
     #     dialog.child_window(title=button, found_index=0).click_input()
     return
+
+
+# Clicks and loads series
+def load_series(dialog, study, series):
+
+    loaded_module = 'SAX3DCustom'
+    command = "dialog.child_window(title=study, control_type='Window', found_index=0).SplitButton.Custom%s.\
+    drag_mouse_input(dst=dialog.%s.rectangle())" % (series+4, loaded_module)
+
+    while True:
+        # if series > 6:
+        #     dialog.child_window(title=study, control_type='Window',
+        #                         found_index=0).SplitButton.Scrollbar.wheel_mouse_input(wheel_dist=-5)
+        eval(command)
+    ###### CONSIDER WRITING METHOD
+        if dialog.child_window(control_type="Window", found_index=0).exists() is True and \
+                dialog.child_window(title="OK Enter", control_type="Button").exists() is True:
+            ignore_warning_message(dialog)
+
+            #Select New Series if failed
+
+        else:
+            break
+
+    return
+
+
+# Clicks on popup messages
+def ignore_warning_message(dialog):
+    dialog.child_window(title="OK Enter", control_type="Button").click_input()
+    return
+
+
+# Anonymize a study
+def anonymize_study(dialog, study):
+
+    dialog.Edit.set_text(study)
+    dialog.window(title=study).right_click_input()
+    Desktop(backend="uia").Menu.child_window(title="Anonymize Study", control_type="MenuItem").click_input()
+    dialog.child_window(title="Anonymize", control_type="Window").Edit.set_text('test1111')
+    dialog.child_window(title="Anonymize", control_type="Window").OKEnter.click_input()
+
+    start = time.time()
+    dialog.child_window(title="Import Study done", control_type="StatusBar").wait('visible', 10000) or \
+        dialog.child_window(title="Load image previews done", control_type="StatusBar").wait('visible', 10000)
+    end = time.time()
+
+    print "Time to anonymize study: %s" % (end-start)

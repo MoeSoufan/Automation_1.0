@@ -6,7 +6,7 @@
 
 from pywinauto import application, findbestmatch, findwindows, Desktop
 from collections import OrderedDict
-import time, re
+import time
 
 
 # Click on Short 3D toolbar buttons
@@ -105,7 +105,7 @@ def click_ml_button(dialog, ml_button):
                 dialog.progressbar.exists()
                 end = time.time()
 
-                print "Time to complete ML action: ", end - start
+                print "Time to complete ML action: %s" % (end-start)
 
     else:
         start = time.time()
@@ -115,33 +115,4 @@ def click_ml_button(dialog, ml_button):
 
         print "Time to complete ML action: ", end - start
 
-    return
-
-
-def sax_main_viewer(dialog, study, series):
-
-    command = "dialog.child_window(title=study, control_type='Window', found_index=0)" \
-              ".SplitButton.Custom%s.double_click_input()" % (series+4)
-
-    ###### CONSIDER WRITING METHOD
-    if dialog.child_window(control_type="Window", found_index=0).exists() is True and \
-            dialog.child_window(title="OK Enter", control_type="Button").exists() is True:
-        dialog.child_window(title="OK Enter", control_type="Button").click_input()
-
-    # print dialog.print_control_identifiers()
-    # eval(command)
-
-    # print dialog.child_window(title=study, found_index=0).print_control_identifiers()
-    # while False:
-    #     if dialog.child_window(title=series, control_type="Text").exists() is False:
-    #         dialog.child_window(title=study).SplitButton.child_window(title="Custom5").click_input()
-    # dialog.child_window(title=study).SplitButton.Custom5.click_input()
-    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom5.click_input()
-
-    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom6.click_input()
-    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom7.click_input()
-    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom8.click_input()
-    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom9.click_input()
-    # dialog.child_window(title="SA-3D Demo").SplitButton.Custom10.click_input()
-    # child_window(title="6.  TRUFI 4 CHAMBER s3p1", control_type="Text")
     return
