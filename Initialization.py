@@ -46,7 +46,7 @@ def initialize_session():
     elif len(process_id) == 0:
         # Streamline this call to support different machines
         app = application.Application(backend="uia").start(
-            r"D:\Moe-Testing\2018-08-15_MontrealReleaseCandidate2\cvi42_5.9.2_(1111)_win_x64\cvi42.exe")
+            r"D:\Moe-Testing\2018-08-15_MontrealReleaseCandidate2\cvi42_5.9.3_(1130)_win_x64\cvi42.exe")
         dialog = app.CirclecardiovascularImaging
         process_id = [app.dialog.process_id()]
         login.login_to_cvi42(app, dialog, 1)

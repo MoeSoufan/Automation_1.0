@@ -7,6 +7,7 @@
 from pywinauto import application, findbestmatch, findwindows, Desktop
 from collections import OrderedDict
 import time
+import supportingFunctions
 
 
 # Click on Short 3D toolbar buttons
@@ -105,7 +106,7 @@ def click_ml_button(dialog, ml_button):
                 dialog.progressbar.exists()
                 end = time.time()
 
-                print "Time to complete ML action: %s" % (end-start)
+                print "Time to complete ML action: %.2f" % (end-start)
 
     else:
         start = time.time()
@@ -113,6 +114,17 @@ def click_ml_button(dialog, ml_button):
         dialog.progressbar.exists()
         end = time.time()
 
-        print "Time to complete ML action: ", end - start
+        print "Time to complete ML action: %.2f" % (end-start)
+
+    return
+
+
+# Clicks and loads series
+def load_sax_series(dialog, study, series):
+
+    command = "dialog.child_window(title=study, control_type='Window', found_index=0).SplitButton.Custom%s.\
+    drag_mouse_input(dst=dialog.SAX3DCustom.rectangle())" % (series+4)
+
+    supportingFunctions.load_series(dialog, study, series, command)
 
     return

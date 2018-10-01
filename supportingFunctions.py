@@ -11,10 +11,14 @@ import re, time
 # Flow:     1) Checks if the toolbar is visible or hidden
 #           2) If hidden, moves the cursor to the workspace tab, the hidden widget should appear
 #           3) If the widget is hidden, and shows when the mouse is nearby the detection area, click the dock button
-def check_toolbar_visible(dialog):
-    if dialog.window(title="Toolbar").exists() is False:
-        dialog.child_window(title="Workspace", control_type="MenuItem").move_mouse_input(absolute=False)
-        dialog.window(title="Toolbar").CheckBox.click_input()
+def turn_on_toolbar(dialog):
+    if dialog.child_window(title="Toolbar", control_type="ToolBar").exists() is False:
+        try:
+            dialog.child_window(title="Workspace", control_type="MenuItem").move_mouse_input(absolute=False)
+            dialog.window(title="Toolbar").CheckBox.click_input()
+
+        except findwindows.ElementNotFoundError:
+            pass
 
     return
 
@@ -61,6 +65,9 @@ def if_modules_hidden(dialog):
 #           4) If still not visible, click on the Add protocol menu item, and try to add the module to the list
 #           5) If still not available, then exit the program
 def click_module(dialog, module, pid):
+    if dialog.child_window(title="Toolbar", control_type="ToolBar").child_window(
+            title=module, control_type="Button").exists():
+        return
 
     counter = 0
     while True:
@@ -99,31 +106,6 @@ def find_visible_buttons(dialog, window_name):
     return
 
 
-# Clicks and loads series
-def load_series(dialog, study, series):
-
-    loaded_module = 'SAX3DCustom'
-    command = "dialog.child_window(title=study, control_type='Window', found_index=0).SplitButton.Custom%s.\
-    drag_mouse_input(dst=dialog.%s.rectangle())" % (series+4, loaded_module)
-
-    while True:
-        # if series > 6:
-        #     dialog.child_window(title=study, control_type='Window',
-        #                         found_index=0).SplitButton.Scrollbar.wheel_mouse_input(wheel_dist=-5)
-        eval(command)
-    ###### CONSIDER WRITING METHOD
-        if dialog.child_window(control_type="Window", found_index=0).exists() is True and \
-                dialog.child_window(title="OK Enter", control_type="Button").exists() is True:
-            ignore_warning_message(dialog)
-
-            #Select New Series if failed
-
-        else:
-            break
-
-    return
-
-
 # Clicks on popup messages
 def ignore_warning_message(dialog):
     dialog.child_window(title="OK Enter", control_type="Button").click_input()
@@ -145,3 +127,25 @@ def anonymize_study(dialog, study):
     end = time.time()
 
     print "Time to anonymize study: %s" % (end-start)
+
+
+# Clicks and loads series
+def load_series(dialog, study, series, command):
+
+    while True:
+        dialog.child_window(title=study, control_type='Window',
+                            found_index=0).SplitButton.Scrollbar.wheel_mouse_input(wheel_dist=60)
+        if series > 6:
+            dialog.child_window(title=study, control_type='Window',
+                                found_index=0).SplitButton.Scrollbar.wheel_mouse_input(wheel_dist=-4)
+        eval(command)
+    ###### CONSIDER WRITING METHOD
+        if dialog.child_window(control_type="Window", found_index=0).exists() is True and \
+                dialog.child_window(title="OK Enter", control_type="Button").exists() is True:
+            ignore_warning_message(dialog)
+
+            #Select New Series if failed
+
+        else:
+            break
+    return
