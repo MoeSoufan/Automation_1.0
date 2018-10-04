@@ -21,9 +21,9 @@ def login_to_cvi42(app, dialog, status):
             exit()
         # dialog.print_control_identifiers()
         dialog.ServerDown.click_input()
-        dialog.child_window(title="zombie").click_input()
-        dialog.child_window(title="User ID Alt+I", control_type="Edit").set_text('moe')
-        dialog.child_window(title="Password Alt+P", control_type="Edit").set_text('moe')
+        dialog.ZombieAdmin.click_input()
+        dialog.child_window(title="User ID Alt+I", control_type="Edit").set_text('moeadmin')
+        dialog.child_window(title="Password Alt+P", control_type="Edit").set_text('moeadmin')
         dialog.child_window(title="Login Enter").invoke()
         start = time.time()
 
@@ -33,6 +33,7 @@ def login_to_cvi42(app, dialog, status):
             # dialog.print_control_identifiers()
             print app.LoginFailure.OKEnterButton
             app.LoginFailure.OKEnterButton.click()
+
         else:
             break
 

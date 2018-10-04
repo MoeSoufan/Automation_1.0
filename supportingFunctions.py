@@ -58,44 +58,6 @@ def if_modules_hidden(dialog):
     return
 
 
-# Click on the module of choice, which is provided by the user
-# Flow:     1) Checks if the module item list is visible or not
-#           2) If visible, click on the module and load it
-#           3) If hidden, mouse scrolls the item list twice in order to see modules that are not in view
-#           4) If still not visible, click on the Add protocol menu item, and try to add the module to the list
-#           5) If still not available, then exit the program
-def click_module(dialog, module, pid):
-    if dialog.child_window(title="Toolbar", control_type="ToolBar").child_window(
-            title=module, control_type="Button").exists():
-        return
-
-    counter = 0
-    while True:
-        # print dialog.print_control_identifiers()
-        if dialog.child_window(title=module, control_type="ListItem").exists(timeout=0.5) is False:
-                if counter == 0:
-                    dialog.List.wheel_mouse_input(wheel_dist=60)
-                dialog.List.wheel_mouse_input(wheel_dist=-(20+counter*20))
-
-                counter += 1
-                if counter == 2:
-                    dialog.MenuItem9.click_input()
-                    connect_to_popup = application.Application(backend="uia").connect(process=pid)
-                    popup_dialog = connect_to_popup.MenuItem9
-                    popup_dialog.child_window(title=module, control_type="MenuItem").click_input()
-
-                if counter > 3: #Add a condition to errors if modules are not in protocols (i.e CT only?)
-                    print "Can't find module."
-                    exit()
-
-        else:
-            dialog.child_window(title=module, control_type="ListItem").click_input()
-            break
-            # if_modules_hidden(dialog)
-
-    return
-
-
 # Return all children windows and visible objects
 def find_visible_buttons(dialog, window_name):
     button_list = filter(None, re.findall(r"'(.*?)'", str(dialog.window(title=window_name).descendants()), re.DOTALL))
@@ -111,41 +73,3 @@ def ignore_warning_message(dialog):
     dialog.child_window(title="OK Enter", control_type="Button").click_input()
     return
 
-
-# Anonymize a study
-def anonymize_study(dialog, study):
-
-    dialog.Edit.set_text(study)
-    dialog.window(title=study).right_click_input()
-    Desktop(backend="uia").Menu.child_window(title="Anonymize Study", control_type="MenuItem").click_input()
-    dialog.child_window(title="Anonymize", control_type="Window").Edit.set_text('test1111')
-    dialog.child_window(title="Anonymize", control_type="Window").OKEnter.click_input()
-
-    start = time.time()
-    dialog.child_window(title="Import Study done", control_type="StatusBar").wait('visible', 10000) or \
-        dialog.child_window(title="Load image previews done", control_type="StatusBar").wait('visible', 10000)
-    end = time.time()
-
-    print "Time to anonymize study: %s" % (end-start)
-
-
-# Clicks and loads series
-def load_series(dialog, study, series, command):
-
-    while True:
-        dialog.child_window(title=study, control_type='Window',
-                            found_index=0).SplitButton.Scrollbar.wheel_mouse_input(wheel_dist=60)
-        if series > 6:
-            dialog.child_window(title=study, control_type='Window',
-                                found_index=0).SplitButton.Scrollbar.wheel_mouse_input(wheel_dist=-4)
-        eval(command)
-    ###### CONSIDER WRITING METHOD
-        if dialog.child_window(control_type="Window", found_index=0).exists() is True and \
-                dialog.child_window(title="OK Enter", control_type="Button").exists() is True:
-            ignore_warning_message(dialog)
-
-            #Select New Series if failed
-
-        else:
-            break
-    return

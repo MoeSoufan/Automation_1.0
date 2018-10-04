@@ -106,7 +106,7 @@ def click_ml_button(dialog, ml_button):
                 dialog.progressbar.exists()
                 end = time.time()
 
-                print "Time to complete ML action: %.2f" % (end-start)
+                print "Time to complete %s ML action: %.2f" % (ml_button, end-start)
 
     else:
         start = time.time()
@@ -114,17 +114,6 @@ def click_ml_button(dialog, ml_button):
         dialog.progressbar.exists()
         end = time.time()
 
-        print "Time to complete ML action: %.2f" % (end-start)
-
-    return
-
-
-# Clicks and loads series
-def load_sax_series(dialog, study, series):
-
-    command = "dialog.child_window(title=study, control_type='Window', found_index=0).SplitButton.Custom%s.\
-    drag_mouse_input(dst=dialog.SAX3DCustom.rectangle())" % (series+4)
-
-    supportingFunctions.load_series(dialog, study, series, command)
+        print "Time to complete %s ML action: %.2f" % (ml_button, end-start)
 
     return
