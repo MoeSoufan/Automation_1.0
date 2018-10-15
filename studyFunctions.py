@@ -20,12 +20,12 @@ def click_module(dialog, module, pid):
         # print dialog.print_control_identifiers()
         if dialog.child_window(title=module, control_type="ListItem").exists(timeout=0.5) is False:
                 if counter == 0:
-                    dialog.List.wheel_mouse_input(wheel_dist=60)
+                    dialog.List.wheel_mouse_input(wheel_dist=60)  # module list scrollbar
                 dialog.List.wheel_mouse_input(wheel_dist=-(20+counter*20))
 
                 counter += 1
                 if counter == 2:
-                    dialog.MenuItem9.click_input()
+                    dialog.MenuItem9.click_input()  # Add protocol step button
                     connect_to_popup = application.Application(backend="uia").connect(process=pid)
                     popup_dialog = connect_to_popup.MenuItem9
                     popup_dialog.child_window(title=module, control_type="MenuItem").click_input()
@@ -43,7 +43,7 @@ def click_module(dialog, module, pid):
 
 
 # Clicks and loads series
-def load_series(dialog, study, series, window_name):
+def load_series(dialog, study, window_name, series):
 
     windows_dict = {"MultipleLong": "MultipleLongCustom",
                     "2CV": "Custom11",              #If SAX window not on

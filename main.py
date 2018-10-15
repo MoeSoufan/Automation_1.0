@@ -21,77 +21,143 @@ import short3d
 import biplanarLAX
 import drawContour
 import studyFunctions
+import viewermodule
 import sys
-
+import outputFile
+import time
+import short3d_TestSuite
+from collections import OrderedDict
 # print pywinauto.__version__
 
-# os.chdir("C:/")
-# print os.getcwd()
 
-# Launch cvi42 if not already running, grab process id. Login method called from within.
-pid, dialog = initialization.initialize_session()
-print "Connected to cvi42.exe ProcessID #%s" % pid
+def some_magic():
 
-counter = 0
-while counter < 10:
+    functions = sorted(
+        [
+            getattr(short3d_TestSuite, func) for func in dir(short3d_TestSuite)
+            if hasattr(getattr(short3d_TestSuite, func), "order")
+        ],
+        key=(lambda func: func.order)
+        )
+    for f in functions:
+        print f
+        try:
+            f(dialog, filename)
+        except TypeError:
+            f(dialog, filename, app)
 
-    # Load SA-3D Demo
-    loadTest.load(dialog, 'SA-3D Demo')
 
-    # Open module
-    studyFunctions.click_module(dialog, "Short\n 3D", pid)
+if __name__ == "__main__":
+    try:
 
-    # Load series Short3d on first iteration
-    if counter == 0:
-        sax3d = studyFunctions.load_series(dialog, 'SA-3D Demo', 7, "SAX3D Stack")
+        filename = 'test.txt'
 
-    # Click LV/RV ED/ES ML on Short3D
-    short3d.click_ml_button(dialog, "Detect LV/RV Contours Current Slice")
+        # Initialize test
+        os.chdir("..")
+        print os.getcwd()
 
-    # Draw line contours on the SAX3D viewer
-    drawContour.line_contour(dialog, sax3d, 5)
+        # Launch cvi42 if not already running, grab process id. Login method called from within.
+        pid, dialog, app = initialization.initialize_session(filename)
+        print "Connected to cvi42.exe ProcessID #%s" % pid
+        counter = 0
 
-    # Delete all contours drawn on screen
-    drawContour.clear_all(dialog)
+        while counter < 100:
+            # Anonymize SA-3D Demo
+            # anon_study = loadTest.anonymize_study(dialog, "SA-3D Demo", "Demo-Trial-1", filename)
 
-    # Close the study
-    loadTest.close_study(dialog)
+            # Load the study
+            loadTest.load(dialog, "SA-3D Demo", filename)
 
-    # Anonymize Function-Flow-Perfusion
-    anon_study = loadTest.anonymize_study(dialog, "Function-Flow-Perfusion", "Demo-Trial-1")
+            # Open module
+            studyFunctions.click_module(dialog, "Short\n 3D", pid)
 
-    # Load the anonymized study
-    loadTest.load(dialog, anon_study)
+            # Load series Short3d
+            sax3d = studyFunctions.load_series(dialog, "SA-3D Demo", "SAX3D Stack", 7)
 
-    # Click Biplanar LAX module
-    studyFunctions.click_module(dialog, 'Biplanar\n LAX', pid)
+            # Run Test-suite
+            some_magic()
 
-    # Load series into 2CV and 4CV viewers
-    cv2 = studyFunctions.load_series(dialog, anon_study, 2, "2CV")
-    cv4 = studyFunctions.load_series(dialog, anon_study, 3, "4CV")
+            # Reset the workspace
+            loadTest.reset_workspace(dialog)
 
-    # Click LA/RA ML button
-    biplanarLAX.click_ml_button(dialog, "Detect LA/RA Contours Current Slice")
+            # Close the study
+            loadTest.close_study(dialog)
 
-    # Draw some contours on 2CV and 4CV viewers
-    drawContour.curved_measurement_contour(dialog, cv2, 4)
-    drawContour.freehand_counter(dialog, cv4)
+        # # Delete the anonymized study
+        # loadTest.delete_anon_study(dialog, anon_study)
 
-    # Close the study
-    loadTest.close_study(dialog)
+            counter += 1
 
-    # Delete the anonymized study
-    loadTest.delete_anon_study(dialog, anon_study)
+    except:
 
-    # Increment the counter
-    counter += 1
+        filename = 'test.txt'
+        outputFile.print_error(filename)
+        print "Exception Raised"
 
-# while counter < 100:
-#     anon_study = loadTest.anonymize_study(dialog, "Function-Flow-Perfusion", "Abra Malamar-Anon")
+# counter = 0
+# while counter < 2:
+#     # Anonymize SA-3D Demo
+#     anon_study = loadTest.anonymize_study(dialog, "SA-3D Demo", "Demo-Trial-1")
+#
+#     # Load the anonymized study
 #     loadTest.load(dialog, anon_study)
+#
+#     # Open module
+#     studyFunctions.click_module(dialog, "Short\n 3D", pid)
+#
+#     # Load series Short3d
+#     sax3d = studyFunctions.load_series(dialog, anon_study, "SAX3D Stack", 7)
+#
+#     # Click LV/RV ED/ES ML on Short3D
+#     short3d.click_ml_button(dialog, "Detect LV/RV Contours Current Slice")
+#
+#     # Draw line contours on the SAX3D viewer
+#     drawContour.line_contour(dialog, sax3d, 5)
+#
+#     # Delete all contours drawn on screen
+#     drawContour.clear_all(dialog)
+#
+#     # Close the study
 #     loadTest.close_study(dialog)
+#
+#     # Delete the anonymized study
 #     loadTest.delete_anon_study(dialog, anon_study)
+#
+#     # Anonymize Function-Flow-Perfusion
+#     anon_study2 = loadTest.anonymize_study(dialog, "Function-Flow-Perfusion", "Demo-Trial-1")
+#
+#     # Load the anonymized study
+#     loadTest.load(dialog, anon_study2)
+#
+#     # Click Biplanar LAX module
+#     studyFunctions.click_module(dialog, 'Biplanar\n LAX', pid)
+#
+#     # Load series into 2CV and 4CV viewers
+#     cv2 = studyFunctions.load_series(dialog, anon_study, "2CV", 2)
+#     cv4 = studyFunctions.load_series(dialog, anon_study, "4CV", 3)
+#
+#     # Click LA/RA ML button
+#     biplanarLAX.click_ml_button(dialog, "Detect LA/RA Contours Current Slice")
+#
+#     # Draw some contours on 2CV and 4CV viewers
+#     drawContour.curved_measurement_contour(dialog, cv2, 4)
+#     drawContour.freehand_counter(dialog, cv4)
+#
+#     # Close the study
+#     loadTest.close_study(dialog)
+#
+#     # Delete the anonymized study
+#     loadTest.delete_anon_study(dialog, anon_study2)
+#
+#     # Increment the counter
 #     counter += 1
 
-raw_input("Press Enter to continue...")
-sys.exit()
+# dialog.child_window(title="Segment SAX - ML", control_type="SplitButton").print_control_identifiers()
+# dialog.Custom2.print_control_identifiers()
+# viewermodule.load_series(dialog, "SA-3D Demo", "Viewer1", 2)
+# viewermodule.load_series(dialog, "SA-3D Demo", "Viewer2", 5)
+# dialog.Custom2.ListBox1.click_input()
+
+# raw_input("Press Enter to continue...")
+#
+# sys.exit()

@@ -4,10 +4,11 @@
 
 from pywinauto import application, findbestmatch, findwindows, Desktop
 import time
+import outputFile
 
 
 # Loads a study from the study database
-def load(dialog, study_name):
+def load(dialog, study_name, filename):
 
     if dialog.child_window(title=study_name, control_type="Window").exists() is True:
         print "Study already Loaded."
@@ -36,7 +37,8 @@ def load(dialog, study_name):
             else:
                 dialog.child_window(title="Loading Study done", control_type="StatusBar").wait('visible', 10000)
                 end = time.time()
-                print "Loading Study Time: %.2f" % (end - start)
+                # print "Loading Study Time: %.2f" % (end - start)
+                outputFile.print_timing(1002, end - start, filename)
                 break
 
         except findwindows.ElementNotFoundError:
@@ -64,7 +66,7 @@ def load(dialog, study_name):
 # Flow:     1) Should be called after initialization function call
 #           2) Takes in a study and preferred anonymized name desired
 #           3) brings up the context menu, and anonymizes the study
-def anonymize_study(dialog, study, anon_name):
+def anonymize_study(dialog, study, anon_name, filename):
 
     if dialog.child_window(title="Toolbar", control_type="ToolBar").\
             child_window(title="Patient List", control_type="Button").exists() is True:
@@ -83,6 +85,7 @@ def anonymize_study(dialog, study, anon_name):
     end = time.time()
 
     print "Time to anonymize study: %.2f" % (end - start)
+    outputFile.print_timing(1001, end-start, filename)
     return anon_name
 
 
@@ -142,4 +145,14 @@ def close_study(dialog):
         dialog.child_window(title="Workspace", control_type="MenuItem").click_input()
         Desktop(backend="uia").Menu.child_window(title="Close Study", control_type="MenuItem").click_input()
 
+    return
+
+
+def reset_workspace(dialog):
+
+    dialog.child_window(title="Workspace", control_type="MenuItem").click_input()
+    Desktop(backend="uia").Menu.child_window(title="Reset Workspace", control_type="MenuItem").click_input()
+
+    dialog.child_window(title="Reset Workspace", control_type="Window").child_window(
+        title="Reset Enter", control_type="Button").click_input()
     return

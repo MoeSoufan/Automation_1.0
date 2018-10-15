@@ -5,6 +5,7 @@
 from pywinauto import findbestmatch, findwindows
 import time
 import supportingFunctions
+import outputFile
 
 
 # Click LA/RA ML button
@@ -15,5 +16,4 @@ def click_ml_button(dialog, button):
     end = time.time()
 
     print "Time to complete LA/RA Current Slice: %.2f" % (end - start)
-
     return

@@ -29,9 +29,26 @@ def line_contour(dialog, window, number=1):
     counter = 0
     while counter < number:
         dialog.press_mouse_input(
-            coords=(randint((left+50), (right-50)), randint((top+50), (bottom-50))), absolute=True)
+            coords=(randint((left+50), (right-150)), randint((top+50), (bottom-50))), absolute=True)
         dialog.click_input(
-            coords=(randint((left+50), (right-50)), randint((top+50), (bottom-50))), absolute=True)
+            coords=(randint((left+50), (right-150)), randint((top+50), (bottom-50))), absolute=True)
+        counter += 1
+
+    dialog.type_keys('{VK_ESCAPE}')
+    # dialog.type_keys('^{BACKSPACE}')
+
+    return
+
+
+def line_contour_splitbutton(dialog, window, number=1):
+    left, top, right, bottom = get_rect(dialog, window)
+
+    counter = 0
+    while counter < number:
+        dialog.press_mouse_input(
+            coords=(randint((left+50), (right-150)), randint((top+50), (bottom-50))), absolute=True)
+        dialog.click_input(
+            coords=(randint((left+50), (right-150)), randint((top+50), (bottom-50))), absolute=True)
         counter += 1
 
     dialog.type_keys('{VK_ESCAPE}')
@@ -55,11 +72,27 @@ def curved_measurement_contour(dialog, window, number=5):
     counter = 0
     while counter < number-1:
         dialog.click_input(
-            coords=(randint((left+50), (right-50)), randint((top+50), (bottom-50))), absolute=True)
+            coords=(randint((left+50), (right-150)), randint((top+50), (bottom-50))), absolute=True)
         counter += 1
 
     dialog.click_input(
-        coords=(randint((left + 50), (right - 50)), randint((top+50), (bottom-50))), absolute=True, double=True)
+        coords=(randint((left + 50), (right - 150)), randint((top+50), (bottom-50))), absolute=True, double=True)
+
+    dialog.type_keys('{VK_ESCAPE}')
+    return
+
+
+def curved_measurement_contour_splitbutton(dialog, window, number=5):
+    left, top, right, bottom = get_rect(dialog, window)
+
+    counter = 0
+    while counter < number-1:
+        dialog.click_input(
+            coords=(randint((left+50), (right-150)), randint((top+50), (bottom-50))), absolute=True)
+        counter += 1
+
+    dialog.click_input(
+        coords=(randint((left + 50), (right - 150)), randint((top+50), (bottom-50))), absolute=True, double=True)
 
     dialog.type_keys('{VK_ESCAPE}')
     return
@@ -78,16 +111,35 @@ def freehand_counter(dialog, window):
     left, top, right, bottom = get_rect(dialog, window)
 
     dialog.press_mouse_input(
-        coords=(randint((left + 50), (right - 50)), randint((top + 50), (bottom - 50))), absolute=True)
+        coords=(randint((left + 50), (right - 150)), randint((top + 50), (bottom - 50))), absolute=True)
 
     counter = 0
-    while counter < 3:
+    while counter < 4:
         dialog.move_mouse_input(
-            coords=(randint((left + 50), (right - 50)), randint((top + 50), (bottom - 50))), absolute=True)
+            coords=(randint((left + 50), (right - 150)), randint((top + 50), (bottom - 50))), absolute=True)
         counter += 1
 
     dialog.release_mouse_input(
-        coords=(randint((left + 50), (right - 50)), randint((top + 50), (bottom - 50))), absolute=True)
+        coords=(randint((left + 50), (right - 150)), randint((top + 50), (bottom - 50))), absolute=True)
+
+    dialog.type_keys('{VK_ESCAPE}')
+    return
+
+
+def freehand_counter_splitbutton(dialog, window):
+    left, top, right, bottom = get_rect(dialog, window)
+
+    dialog.press_mouse_input(
+        coords=(randint((left + 50), (right - 150)), randint((top + 50), (bottom - 50))), absolute=True)
+
+    counter = 0
+    while counter < 4:
+        dialog.move_mouse_input(
+            coords=(randint((left + 50), (right - 150)), randint((top + 50), (bottom - 50))), absolute=True)
+        counter += 1
+
+    dialog.release_mouse_input(
+        coords=(randint((left + 50), (right - 150)), randint((top + 50), (bottom - 50))), absolute=True)
 
     dialog.type_keys('{VK_ESCAPE}')
     return
@@ -97,3 +149,33 @@ def clear_all(dialog):
     dialog.type_keys('^{BACKSPACE}')
     return
 
+
+def draw_epi_endo(dialog, window):
+    left, top, right, bottom = get_rect(dialog, window)
+
+    dialog.press_mouse_input(
+        coords=(randint((left + 50), (right - 150)), randint((top + 50), (bottom - 50))), absolute=True)
+
+    counter = 0
+    while counter < 4:
+        dialog.move_mouse_input(
+            coords=(randint((left + 50), (right - 150)), randint((top + 50), (bottom - 50))), absolute=True)
+        counter += 1
+
+    dialog.release_mouse_input(
+        coords=(randint((left + 50), (right - 150)), randint((top + 50), (bottom - 50))), absolute=True)
+
+    dialog.type_keys('{VK_ESCAPE}')
+    return
+
+
+def draw_lv_extent(dialog, window):
+    left, top, right, bottom = get_rect(dialog, window)
+
+    counter = 0
+    while counter < 3:
+        dialog.click_input(
+            coords=(randint((left + 50), (right - 150)), randint((top + 50), (bottom - 50))), absolute=True)
+        counter += 1
+
+    return
