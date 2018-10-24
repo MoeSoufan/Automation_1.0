@@ -36,9 +36,9 @@ def initialize_session(filename):
             print "Login Required"
 
             if dialog.child_window(title="Circle Cardiovascular Imaging - Client Login").exists() is True:
-                login.login_to_cvi42(app, dialog, 2, filename)
+                login.test1000_login_to_cvi42(app, dialog, 2, filename)
             else:
-                login.login_to_cvi42(app, dialog, 1, filename)
+                login.test1000_login_to_cvi42(app, dialog, 1, filename)
         else:
             # dialog.print_control_identifiers()
             print "This is the main window, user: %s" % str(dialog.texts()[0]).split('-')[1]
@@ -51,7 +51,7 @@ def initialize_session(filename):
         dialog = app.CirclecardiovascularImaging
         dialog.set_focus()
         process_id = [app.dialog.process_id()]
-        login.login_to_cvi42(app, dialog, 1, filename)
+        login.test1000_login_to_cvi42(app, dialog, 1, filename)
 
     return int(process_id[0]), dialog, app
 

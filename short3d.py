@@ -6,6 +6,7 @@
 
 from pywinauto import Desktop
 import time
+import studyFunctions
 
 
 # Click on Short 3D toolbar buttons
@@ -75,6 +76,8 @@ def click_ml(dialog, ml_button, app):
 
                 start = time.time()
                 dialog.child_window(title=ml_button).click_input()
+
+                dialog.progressbar.exists()
                 app.wait_cpu_usage_lower(threshold=5, timeout=1000)
                 end = time.time()
 
@@ -84,6 +87,8 @@ def click_ml(dialog, ml_button, app):
     else:
         start = time.time()
         dialog.child_window(title=ml_button).click_input()
+
+        dialog.progressbar.exists()
         app.wait_cpu_usage_lower(threshold=5, timeout=1000)
         end = time.time()
 
@@ -121,3 +126,13 @@ def click_splitbutton(dialog, button):
         dialog.progressbar.exists()
 
     return
+
+
+def ml_full_workflow(dialog, app, pid, study, button, series):
+
+    studyFunctions.click_module(dialog, "Short\n 3D", pid)
+    studyFunctions.load_series(dialog, study, "SAX3D Stack", series)
+
+    ml_time = click_ml(dialog, button, app)
+
+    return ml_time

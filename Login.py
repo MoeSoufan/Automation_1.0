@@ -12,7 +12,7 @@ import sys
 import outputFile
 
 
-def login_to_cvi42(app, dialog, status, filename):
+def test1000_login_to_cvi42(app, dialog, status, filename):
 
     while True:
         if app.LoginFailure.exists(timeout=2) is True:
@@ -23,9 +23,9 @@ def login_to_cvi42(app, dialog, status, filename):
             sys.exit()
 
         dialog.ServerDown.click_input()
-        dialog.ZombieAdmin.click_input()
-        dialog.child_window(title="User ID Alt+I", control_type="Edit").set_text('alexadmin')
-        dialog.child_window(title="Password Alt+P", control_type="Edit").set_text('alexadmin')
+        dialog.absinthe.click_input()
+        dialog.child_window(title="User ID Alt+I", control_type="Edit").set_text('moeadmin')
+        dialog.child_window(title="Password Alt+P", control_type="Edit").set_text('moeadmin')
         dialog.child_window(title="Login Enter").invoke()
         start = time.time()
 

@@ -7,6 +7,24 @@ from pywinauto import application, findbestmatch, findwindows, Desktop
 import re, time
 
 
+# Returns the appropriate window name from the name given, name given should be what appears on the cvi client
+def find_window_func(window_name):
+
+    windows_dict = {"MultipleLong": "MultipleLongCustom",
+                    "2CV": "Custom11",              #If SAX window not on
+                    "4CV": "Custom16",              #If SAX window not on
+                    "SAX3D Stack": "SAX3DCustom",
+                    "Phase": "PhaseCustom",
+                    "Magnitude": "MagnitudeCustom",
+                    "Viewer1": "Custom10",          # Viewer TopLeft
+                    "Viewer2": "Custom14",          # Viewer TopRight
+                    "Viewer3": "Custom18",          # Viewer BottomLeft
+                    "Viewer4": "Custom20"}          # Viewer BottomRight
+
+    for window in [k for k, v in windows_dict.items() if v == windows_dict[window_name]]:
+        return windows_dict[window]
+
+
 # If the toolbar is hidden and un-docked, Auto hide button is clicked and toolbar is re-docked
 # Flow:     1) Checks if the toolbar is visible or hidden
 #           2) If hidden, moves the cursor to the workspace tab, the hidden widget should appear
@@ -39,7 +57,7 @@ def check_toolbar_hidden(dialog):
 def if_cvi42_minimized():
     icon_app = application.Application(backend="uia").connect(path="explorer")
     tray_dialog = icon_app.window(class_name="Shell_TrayWnd")
-    tray_dialog.child_window(title="cvi42 - Shortcut - 1 running window").click()
+    tray_dialog.child_window(title="cvi42 Client for Windows - 1 running window").click()
 
     return
 
@@ -73,3 +91,15 @@ def ignore_warning_message(dialog):
     dialog.child_window(title="OK Enter", control_type="Button").click_input()
     return
 
+
+def get_version(dialog):
+
+    dialog.child_window(title="Help", control_type="MenuItem").click_input()
+
+    Desktop(backend="uia").Menu.child_window(title="About", control_type="MenuItem").click_input()
+
+    version = dialog.child_window(title="About cvi42", control_type="Window").Static3.texts()
+    # print version[0]
+    dialog.child_window(title="OK Enter", control_type="Button").click_input()
+
+    return "\n" + str(version[0])
